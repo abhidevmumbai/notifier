@@ -1,7 +1,9 @@
 'use strict';
 
 var notify = {
-    opts: {},
+    opts: {
+        anchors: []
+    },
     notifications: {},
     markup: {
         notifyListItem: '<li class="notify-item"></li>',
@@ -9,19 +11,25 @@ var notify = {
     },
 
     init: function(opts) {
-        this.opts = opts;
-        var localNotifications = JSON.parse(localStorage.getItem('notifications'));
+        var localNotifications = this.readStore(),
+            anchorsLength = 0;
 
+        // Set local notifications if any
         if (localNotifications) {
+            this.notifications = localNotifications;
             for (var key in localNotifications) {
                 this.opts.anchors.push(key);
             }
+            // merging the local and config anchors
+            $.merge(this.opts.anchors, opts.anchors);
         } else {
-            var anchorsLength = opts.anchors.length;
-            if (anchorsLength) {
-                for (var i=0; i<anchorsLength; i++) {
-                    this.setBubble(opts.anchors[i]);
-                }
+            this.opts = opts.anchors;
+        }
+
+        anchorsLength = this.opts.anchors.length;
+        if (anchorsLength) {
+            for (var i=0; i<anchorsLength; i++) {
+                this.setBubble(opts.anchors[i]);
             }
         }
 
@@ -29,10 +37,11 @@ var notify = {
         this.bindEvents();
     },
 
+    // Send notification
     sendMsg: function(category, icon, msg) {
         console.log('msg sent to: '+ category);
         var bubble = $('#' + category).find('.counter'),
-            count = parseInt(bubble.html()),
+            count = this.notifications[category].count,
             item = {
                 msg: msg,
                 icon: icon
@@ -49,14 +58,23 @@ var notify = {
             this.renderMsg(item);
         }
 
-        this.updateStore();
+        this.writeStore();
     },
 
     clearAll: function(category) {
 
     },
 
-    updateStore: function () {
+    // Read local storage
+    readStore: function () {
+        console.log('Reading local store');
+        var notifications = JSON.parse(localStorage.getItem('notifications'));
+        return notifications;
+    },
+
+    // Write local storage
+    writeStore: function () {
+        console.log('Writing to local store');
         localStorage.setItem('notifications', JSON.stringify(this.notifications));
     },
 

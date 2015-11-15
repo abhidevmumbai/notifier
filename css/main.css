@@ -1,0 +1,94 @@
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+	color: #bbb;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+ul, ol {
+	list-style: none;
+}
+
+nav ul li{
+	display: inline-block;
+	padding: 5px;
+
+}
+.counter {
+	background: #1BD0BF;
+    color: #fff;
+    border-radius: 10px;
+    width: 18px;
+    display: inline-block;
+    text-align: center;
+    height: 18px;
+    line-height: 18px;
+}
+
+#notify-wrapper {
+    border: 1px #ddd solid;
+    border-radius: 10px;
+    width: 260px;
+    overflow: hidden;
+    padding: 15px 10px;
+    display: none;
+}
+
+.notify-menu {    
+    clear: both;
+    width: 100%;
+    float: left;
+    padding: 0;
+    margin: 0;
+    font-size: 10px;
+}
+
+.notify-menu li {
+    display: inline-block;
+    float: left;
+    text-transform: lowercase;
+    padding: 1px 0;
+    margin: 0 35px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.notify-list {
+    color: rgb(102, 102, 102);
+    cursor: pointer;
+    display: block;
+    font-size: 11px;
+    float: left;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    position: relative;
+}
+.notify-list li {
+	overflow: hidden;
+}
+.notify-list .icon {
+    background: url(http://www.codebasehero.com/files/notification-menu/demo/images/icon.png) 50% 50% no-repeat scroll transparent;
+    display: block;
+    height: 16px;
+    width: 16px;
+    float: left;
+    margin-right: 6px;
+}
+
+.notify-list .msg {
+    display: block;
+    margin-right: 22px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    float: left;
+}
+
+.notify-list .close {
+    cursor: pointer;
+    display: block;
+    float: right;
+}

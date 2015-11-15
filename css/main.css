@@ -68,7 +68,11 @@ nav ul li a {
     text-align: center;
 }
 #notify-wrapper .header .counter {
+    border-radius: 12px;
     position: static;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
 }
 .notify-menu {    
     clear: both;
@@ -106,6 +110,10 @@ nav ul li a {
     line-height: 44px;
 	overflow: hidden;
     padding: 15px;
+}
+.notify-list li .actor {
+    color: #747f8b;
+    font-weight: bold;
 }
 .notify-list li.unread {
     background: #fff;

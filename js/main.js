@@ -50,6 +50,7 @@ var notify = {
 
         this.notifications[category]['unread'].count = ++count;
         bubble.html(count);
+        bubble.fadeIn('slow');
         this.notifications[category]['unread'].msgs.push(msg);
 
         if ($('#notify-wrapper:visible').length) {
@@ -86,22 +87,22 @@ var notify = {
         var read = notify.notifications[category]['read'].msgs,
             unread = notify.notifications[category]['unread'].msgs;
 
-        if ($('#notify-wrapper .notify-list').hasClass(category)) {
-            $('#notify-wrapper').toggle();
+        if ($('#notify-wrapper:visible').length > 0 && $('#notify-wrapper .notify-list').hasClass(category)) {
+            $('#notify-wrapper').fadeOut('slow', 'linear');
+            $('#'+ category +' .counter').html('0').hide();
+            notify.notifications[category]['unread'].msgs = [];
+            notify.notifications[category]['unread'].count = 0;
+            notify.notifications[category]['read'].msgs = read;
+            notify.notifications[category]['read'].count = read.length;
         } else {
-            $('#notify-wrapper').show();
+            $('#notify-wrapper').fadeIn('slow', 'linear');
         }
+        
         $('#notify-wrapper .header').html(category + ' <span class="counter">'+ unread.length +'</span>');
         notify.populate(category);
-
-        $('#'+ category +' .counter').html('0');
         read = read.concat(unread);
-        console.log(read);
-        console.log(unread);
-        notify.notifications[category]['unread'].msgs = [];
-        notify.notifications[category]['unread'].count = 0;
-        notify.notifications[category]['read'].msgs = read;
-        notify.notifications[category]['read'].count = read.length;
+
+        
 
         notify.writeStore();
     },
@@ -138,11 +139,11 @@ var notify = {
         console.log(msg);
         var text = '';
         switch (category) {
-            case 'social' : text = msg.actor +' '+ msg.action +' on your '+ msg.target;
+            case 'social' : text = '<span class="actor">'+ msg.actor +'</span> '+ msg.action +' on your '+ msg.target;
                 break;
-            case 'projects' : text = msg.actor +' '+ msg.action +' you a '+ msg.target;
+            case 'projects' : text = '<span class="actor">'+ msg.actor +'</span> '+ msg.action +' you a '+ msg.target;
                 break;
-            case 'messages' : text = msg.actor +' '+ msg.action +' you a '+ msg.target;
+            case 'messages' : text = '<span class="actor">'+ msg.actor +'</span> '+ msg.action +' you a '+ msg.target;
                 break;
         }
         var tmpl = '<li id="'+ new Date() +'" class="'+ css +'">'

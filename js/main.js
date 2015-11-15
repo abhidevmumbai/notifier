@@ -38,7 +38,7 @@ var notify = {
     },
 
     // Send notification
-    sendMsg: function(category, icon, msg) {
+    sendMsg: function(category, msg) {
         console.log('msg sent to: '+ category);
         // Create the category if it doesn't exist
         if(!this.notifications[category]) {
@@ -46,18 +46,14 @@ var notify = {
         }
 
         var bubble = $('#' + category).find('.counter'),
-            count = this.notifications[category]['unread'].count,
-            item = {
-                msg: msg,
-                icon: icon
-            };
+            count = this.notifications[category]['unread'].count;
 
         this.notifications[category]['unread'].count = ++count;
         bubble.html(count);
-        this.notifications[category]['unread'].msgs.push(item);
+        this.notifications[category]['unread'].msgs.push(msg);
 
         if ($('#notify-wrapper:visible').length) {
-            this.renderMsg(item, 'unread');
+            this.renderMsg(category, msg, 'unread');
         }
 
         this.writeStore();
@@ -124,10 +120,10 @@ var notify = {
             read = this.notifications[category]['read'].msgs;
 
         for (var i=0, len=read.length; i<len; i++) {
-            this.renderMsg(read[i], 'read');
+            this.renderMsg(category, read[i], 'read');
         }
         for (var i=0, len=unread.length; i<len; i++) {
-            this.renderMsg(unread[i], 'unread');
+            this.renderMsg(category, unread[i], 'unread');
         }
     },
 
@@ -138,11 +134,20 @@ var notify = {
         });
     },
 
-    renderMsg: function (item, css) {
-        console.log(item);
+    renderMsg: function (category, msg, css) {
+        console.log(msg);
+        var text = '';
+        switch (category) {
+            case 'social' : text = msg.actor +' '+ msg.action +' on your '+ msg.target;
+                break;
+            case 'projects' : text = msg.actor +' '+ msg.action +' you a '+ msg.target;
+                break;
+            case 'messages' : text = msg.actor +' '+ msg.action +' you a '+ msg.target;
+                break;
+        }
         var tmpl = '<li id="'+ new Date() +'" class="'+ css +'">'
-                + '<img class="icon" src="'+ item.icon +'"/>'
-                + '<span class="msg">'+ item.msg +'</span>'
+                + '<img class="icon" src="'+ msg.avatar +'"/>'
+                + '<span class="msg">'+ text +'.</span>'
                 // + '<span class="close">x</span>'
             '</li>';
         $('.notify-list').prepend(tmpl);
@@ -162,12 +167,36 @@ var notify = {
 };
 
 notify.init({
-    anchors: ['projects', 'tasks', 'messages']
+    anchors: ['social', 'projects', 'messages']
 });
 
-notify.sendMsg('projects', 'images/avatar.jpg', 'Abhi commented on your photo');
-notify.sendMsg('projects', 'images/avatar.jpg', 'Ashu commented on your photo');
-notify.sendMsg('projects', 'images/avatar.jpg', 'Joe commented on your photo');
-notify.sendMsg('projects', 'images/avatar.jpg', 'Jim commented on your photo');
-notify.sendMsg('tasks', 'images/avatar.jpg', 'Abhi assigned a task');
-notify.sendMsg('messages', 'images/avatar.jpg', 'Abhi sent a msg to you');
+notify.sendMsg('social', {
+    avatar: 'images/avatar.jpg',
+    actor: 'Abhi',
+    action: 'commented',
+    target: 'photo'
+});
+notify.sendMsg('social', {
+    avatar: 'images/avatar.jpg',
+    actor: 'Joe',
+    action: 'posted a photo',
+    target: 'wall'
+});
+notify.sendMsg('social', {
+    avatar: 'images/avatar.jpg',
+    actor: 'Doug',
+    action: 'commented',
+    target: 'last video'
+});
+notify.sendMsg('projects', {
+    avatar: 'images/avatar.jpg',
+    actor: 'Abhi',
+    action: 'assigned',
+    target: 'task'
+});
+notify.sendMsg('messages', {
+    avatar: 'images/avatar.jpg',
+    actor: 'Abhi',
+    action: 'sent',
+    target: 'message'
+});

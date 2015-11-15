@@ -23,9 +23,10 @@ var notify = {
             // merging the local and config anchors
             $.merge(this.opts.anchors, opts.anchors);
         } else {
-            this.opts = opts.anchors;
+            this.opts.anchors = opts.anchors;
         }
 
+        // Set bubble counters in each category anchors
         anchorsLength = this.opts.anchors.length;
         if (anchorsLength) {
             for (var i=0; i<anchorsLength; i++) {
@@ -33,29 +34,30 @@ var notify = {
             }
         }
 
-
         this.bindEvents();
     },
 
     // Send notification
     sendMsg: function(category, icon, msg) {
         console.log('msg sent to: '+ category);
+        // Create the category if it doesn't exist
+        if(!this.notifications[category]) {
+            this.createCategory(category);
+        }
+
         var bubble = $('#' + category).find('.counter'),
-            count = this.notifications[category].count,
+            count = this.notifications[category]['unread'].count,
             item = {
                 msg: msg,
                 icon: icon
             };
 
-        if(!this.notifications[category]) {
-            this.createCategory(category);
-        }
-        this.notifications[category].count = ++count;
+        this.notifications[category]['unread'].count = ++count;
         bubble.html(count);
-        this.notifications[category].msgs.push(item);
+        this.notifications[category]['unread'].msgs.push(item);
 
         if ($('#notify-wrapper:visible').length) {
-            this.renderMsg(item);
+            this.renderMsg(item, 'unread');
         }
 
         this.writeStore();
@@ -85,13 +87,26 @@ var notify = {
     },
 
     bubbleClickHandler: function (category) {
-        console.log('bubble clicked on '+ category);
+        var read = notify.notifications[category]['read'].msgs,
+            unread = notify.notifications[category]['unread'].msgs;
+
         if ($('#notify-wrapper .notify-list').hasClass(category)) {
             $('#notify-wrapper').toggle();
         } else {
             $('#notify-wrapper').show();
         }
         notify.populate(category);
+
+        $('#'+ category +' .counter').html('0');
+        read = read.concat(unread);
+        console.log(read);
+        console.log(unread);
+        notify.notifications[category]['unread'].msgs = [];
+        notify.notifications[category]['unread'].count = 0;
+        notify.notifications[category]['read'].msgs = read;
+        notify.notifications[category]['read'].count = read.length;
+
+        notify.writeStore();
     },
 
     populate: function (category) {
@@ -104,8 +119,14 @@ var notify = {
         notifyList.html('');
 
         // Loop through all the category specific notifications and render them
-        for (var i=0, len=this.notifications[category].msgs.length; i<len; i++) {
-            this.renderMsg( this.notifications[category].msgs[i]);
+        var unread = this.notifications[category]['unread'].msgs,
+            read = this.notifications[category]['read'].msgs;
+
+        for (var i=0, len=read.length; i<len; i++) {
+            this.renderMsg(read[i], 'read');
+        }
+        for (var i=0, len=unread.length; i<len; i++) {
+            this.renderMsg(unread[i], 'unread');
         }
     },
 
@@ -116,20 +137,25 @@ var notify = {
         });
     },
 
-    renderMsg: function (item) {
-        var tmpl = '<li id="'+ new Date() +'">'
+    renderMsg: function (item, css) {
+        var tmpl = '<li id="'+ new Date() +'" class="'+ css +'">'
                 + '<img src="'+ item.icon +'"/>'
                 + '<span class="msg">'+ item.msg +'</span>'
-                + '<span class="close">x</span>'
+                // + '<span class="close">x</span>'
             '</li>';
         $('.notify-list').prepend(tmpl);
     },
 
     // Create notification categories
     createCategory: function (category) {
-        this.notifications[category] = {};
-        this.notifications[category].count = 0;
-        this.notifications[category].msgs = [];
+        this.notifications[category] = {
+            unread: {},
+            read: {}
+        };
+        this.notifications[category]['unread'].count = 0;
+        this.notifications[category]['unread'].msgs = [];
+        this.notifications[category]['read'].count = 0;
+        this.notifications[category]['read'].msgs = [];
     }
 };
 

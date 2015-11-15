@@ -70,6 +70,9 @@ nav ul li{
 .notify-list li {
 	overflow: hidden;
 }
+.notify-list li.unread {
+    background: #eee;
+}
 .notify-list .icon {
     background: url(http://www.codebasehero.com/files/notification-menu/demo/images/icon.png) 50% 50% no-repeat scroll transparent;
     display: block;

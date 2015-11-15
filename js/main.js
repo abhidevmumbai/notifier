@@ -95,6 +95,7 @@ var notify = {
         } else {
             $('#notify-wrapper').show();
         }
+        $('#notify-wrapper .header').html(category + ' <span class="counter">'+ unread.length +'</span>');
         notify.populate(category);
 
         $('#'+ category +' .counter').html('0');
@@ -138,8 +139,9 @@ var notify = {
     },
 
     renderMsg: function (item, css) {
+        console.log(item);
         var tmpl = '<li id="'+ new Date() +'" class="'+ css +'">'
-                + '<img src="'+ item.icon +'"/>'
+                + '<img class="icon" src="'+ item.icon +'"/>'
                 + '<span class="msg">'+ item.msg +'</span>'
                 // + '<span class="close">x</span>'
             '</li>';
@@ -163,9 +165,9 @@ notify.init({
     anchors: ['projects', 'tasks', 'messages']
 });
 
-notify.sendMsg('projects', '', 'Abhi commented on your photo');
-notify.sendMsg('projects', '', 'Ashu commented on your photo');
-notify.sendMsg('projects', '', 'Joe commented on your photo');
-notify.sendMsg('projects', '', 'Jim commented on your photo');
-notify.sendMsg('tasks', '', 'Abhi assigned a task');
-notify.sendMsg('messages', '', 'Abhi sent a msg to you');
+notify.sendMsg('projects', 'images/avatar.jpg', 'Abhi commented on your photo');
+notify.sendMsg('projects', 'images/avatar.jpg', 'Ashu commented on your photo');
+notify.sendMsg('projects', 'images/avatar.jpg', 'Joe commented on your photo');
+notify.sendMsg('projects', 'images/avatar.jpg', 'Jim commented on your photo');
+notify.sendMsg('tasks', 'images/avatar.jpg', 'Abhi assigned a task');
+notify.sendMsg('messages', 'images/avatar.jpg', 'Abhi sent a msg to you');

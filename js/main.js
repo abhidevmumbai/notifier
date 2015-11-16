@@ -75,11 +75,16 @@ var notify = {
 
     // Clear all msgs
     clearAll: function(category) {
-        this.notifications[category]['read'].msgs = [];
-        this.notifications[category]['read'].count = 0;
-        this.notifications[category]['unread'].msgs = [];
-        this.notifications[category]['unread'].count = 0;
-        $('#'+ category +' .counter').html('0').hide();
+        if (category) {
+            this.notifications[category]['read'].msgs = [];
+            this.notifications[category]['read'].count = 0;
+            this.notifications[category]['unread'].msgs = [];
+            this.notifications[category]['unread'].count = 0;
+        } else {
+            this.notifications = {};
+        }
+        this.writeStore();
+        $('.counter').html('0').hide();
     },
 
     // Read local storage
@@ -162,7 +167,7 @@ var notify = {
                 // + '<span class="close">x</span>'
             '</li>';
 
-        $('.notify-list').prepend(tmpl);
+        $('.notify-list.'+ category).prepend(tmpl);
     },
 
     // Create notification categories
@@ -178,37 +183,40 @@ var notify = {
     }
 };
 
-notify.init({
-    anchors: ['social', 'projects', 'messages']
-});
+function generator () {
+    var actors = ['Joe', 'Mary', 'Harry', 'Jessica', 'Tim', 'Chloe'];
 
-notify.sendMsg('social', {
-    avatar: 'images/avatar.jpg',
-    actor: 'Abhi',
-    action: 'commented',
-    target: 'on your photo'
-});
-notify.sendMsg('social', {
-    avatar: 'images/avatar.jpg',
-    actor: 'Joe',
-    action: 'posted a photo',
-    target: 'on your wall'
-});
-notify.sendMsg('social', {
-    avatar: 'images/avatar.jpg',
-    actor: 'Doug',
-    action: 'commented',
-    target: 'on your last video'
-});
-notify.sendMsg('projects', {
-    avatar: 'images/avatar.jpg',
-    actor: 'Abhi',
-    action: 'assigned',
-    target: 'you a task'
-});
-notify.sendMsg('messages', {
-    avatar: 'images/avatar.jpg',
-    actor: 'Abhi',
-    action: 'sent',
-    target: 'you a message'
-});
+    notify.init({
+        anchors: ['social', 'projects', 'messages']
+    });
+
+    setInterval(function () {
+        notify.sendMsg('social', {
+            avatar: 'images/avatar.jpg',
+            actor: actors[Math.floor(Math.random()*actors.length)],
+            action: 'commented',
+            target: 'on your photo'
+        });
+    }, 3000);
+
+    setInterval(function () {
+
+        notify.sendMsg('projects', {
+            avatar: 'images/avatar.jpg',
+            actor: actors[Math.floor(Math.random()*actors.length)],
+            action: 'assigned',
+            target: 'you a task'
+        });
+    }, 5000);
+
+    setInterval(function () {
+        notify.sendMsg('messages', {
+            avatar: 'images/avatar.jpg',
+            actor: actors[Math.floor(Math.random()*actors.length)],
+            action: 'sent',
+            target: 'you a message'
+        });
+    }, 7000);
+}
+
+generator();

@@ -8,6 +8,9 @@ body {
     background: #f2f6f8;
     font-family: Arial, sans-serif;
     font-size: 14px;
+    float: left;
+    width: 100%;
+    padding: 0 0 30px 0;
 }
 ul, ol {
 	list-style: none;
@@ -54,9 +57,11 @@ nav ul li a {
 #notify-wrapper {
     background: #e9eff2;
     border-radius: 10px;
+    box-shadow: 0 0 10px;
     width: 360px;
     overflow: hidden;
     display: none;
+    margin: 20px;
 }
 #notify-wrapper .header {
     background: #fff;
@@ -103,6 +108,8 @@ nav ul li a {
     width: 100%;
     padding: 0;
     position: relative;
+    height: 180px;
+    overflow: scroll;
 }
 .notify-list li {
     border-bottom: 1px solid #ccd8de;
@@ -110,6 +117,9 @@ nav ul li a {
     line-height: 44px;
 	overflow: hidden;
     padding: 15px;
+}
+.notify-list li:last-child {
+    border: none;
 }
 .notify-list li .actor {
     color: #747f8b;

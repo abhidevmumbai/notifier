@@ -60,8 +60,26 @@ var notify = {
         this.writeStore();
     },
 
-    clearAll: function(category) {
+    // Mark unread msgs to read
+    markRead: function (category) {
+        var read = notify.notifications[category]['read'].msgs,
+            unread = notify.notifications[category]['unread'].msgs;
 
+        read = read.concat(unread);
+        $('#'+ category +' .counter').html('0').hide();
+        this.notifications[category]['unread'].msgs = [];
+        this.notifications[category]['unread'].count = 0;
+        this.notifications[category]['read'].msgs = read;
+        this.notifications[category]['read'].count = read.length;
+    },
+
+    // Clear all msgs
+    clearAll: function(category) {
+        this.notifications[category]['read'].msgs = [];
+        this.notifications[category]['read'].count = 0;
+        this.notifications[category]['unread'].msgs = [];
+        this.notifications[category]['unread'].count = 0;
+        $('#'+ category +' .counter').html('0').hide();
     },
 
     // Read local storage
@@ -84,26 +102,17 @@ var notify = {
     },
 
     bubbleClickHandler: function (category) {
-        var read = notify.notifications[category]['read'].msgs,
-            unread = notify.notifications[category]['unread'].msgs;
+        var unread = notify.notifications[category]['unread'].msgs;
 
         if ($('#notify-wrapper:visible').length > 0 && $('#notify-wrapper .notify-list').hasClass(category)) {
             $('#notify-wrapper').fadeOut('slow', 'linear');
-            $('#'+ category +' .counter').html('0').hide();
-            notify.notifications[category]['unread'].msgs = [];
-            notify.notifications[category]['unread'].count = 0;
-            notify.notifications[category]['read'].msgs = read;
-            notify.notifications[category]['read'].count = read.length;
+            notify.markRead(category);
         } else {
             $('#notify-wrapper').fadeIn('slow', 'linear');
         }
         
         $('#notify-wrapper .header').html(category + ' <span class="counter">'+ unread.length +'</span>');
         notify.populate(category);
-        read = read.concat(unread);
-
-        
-
         notify.writeStore();
     },
 
@@ -119,7 +128,8 @@ var notify = {
         // Loop through all the category specific notifications and render them
         var unread = this.notifications[category]['unread'].msgs,
             read = this.notifications[category]['read'].msgs;
-
+        console.log(unread);
+        console.log(read);
         for (var i=0, len=read.length; i<len; i++) {
             this.renderMsg(category, read[i], 'read');
         }
@@ -136,7 +146,6 @@ var notify = {
     },
 
     renderMsg: function (category, msg, css) {
-        console.log(msg);
         var text = '';
         switch (category) {
             case 'social' : text = '<span class="actor">'+ msg.actor +'</span> '+ msg.action +' on your '+ msg.target;

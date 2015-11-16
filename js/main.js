@@ -143,23 +143,25 @@ var notify = {
         $('#notify-wrapper .close').bind('click', function () {
             $('#notify-wrapper').toggle();
         });
+
+        $('#notify-wrapper #unread-menu-item').bind('click', function () {
+            $('#notify-wrapper .notify-list li').hide();
+            $('#notify-wrapper .notify-list .unread').show();
+        })
+
+        $('#notify-wrapper #all-menu-item').bind('click', function () {
+            $('#notify-wrapper .notify-list li').show();
+        })
     },
 
     renderMsg: function (category, msg, css) {
-        var text = '';
-        switch (category) {
-            case 'social' : text = '<span class="actor">'+ msg.actor +'</span> '+ msg.action +' on your '+ msg.target;
-                break;
-            case 'projects' : text = '<span class="actor">'+ msg.actor +'</span> '+ msg.action +' you a '+ msg.target;
-                break;
-            case 'messages' : text = '<span class="actor">'+ msg.actor +'</span> '+ msg.action +' you a '+ msg.target;
-                break;
-        }
-        var tmpl = '<li id="'+ new Date() +'" class="'+ css +'">'
+        var text = '<span class="actor">'+ msg.actor +'</span> '+ msg.action +' '+ msg.target,
+            tmpl = '<li id="'+ new Date() +'" class="'+ css +'">'
                 + '<img class="icon" src="'+ msg.avatar +'"/>'
                 + '<span class="msg">'+ text +'.</span>'
                 // + '<span class="close">x</span>'
             '</li>';
+
         $('.notify-list').prepend(tmpl);
     },
 
@@ -184,29 +186,29 @@ notify.sendMsg('social', {
     avatar: 'images/avatar.jpg',
     actor: 'Abhi',
     action: 'commented',
-    target: 'photo'
+    target: 'on your photo'
 });
 notify.sendMsg('social', {
     avatar: 'images/avatar.jpg',
     actor: 'Joe',
     action: 'posted a photo',
-    target: 'wall'
+    target: 'on your wall'
 });
 notify.sendMsg('social', {
     avatar: 'images/avatar.jpg',
     actor: 'Doug',
     action: 'commented',
-    target: 'last video'
+    target: 'on your last video'
 });
 notify.sendMsg('projects', {
     avatar: 'images/avatar.jpg',
     actor: 'Abhi',
     action: 'assigned',
-    target: 'task'
+    target: 'you a task'
 });
 notify.sendMsg('messages', {
     avatar: 'images/avatar.jpg',
     actor: 'Abhi',
     action: 'sent',
-    target: 'message'
+    target: 'you a message'
 });
